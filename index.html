@@ -1,49 +1,135 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/gruvbox-dark.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+        <!--
+          1st Slide
+          Mostly just the title and getting people to use the updated version. If we need to pin
+          day of this can be modified. This is then followed by introductions
+        -->
+        <section>
+          <section>
+            Async/Await<br>RustConf 2018
+          </section>
+          <section>
+            Before we get started
+            <pre><code>
+              rustup override set nightly
+            </code></pre>
+          </section>
+          <section>
+            <section>
+              Introduction
+            </section>
+            <img src="assets/mgattozzi.jpg" style="float: right; width: 40%">
+            <ul style="width: 50%;">
+              <li>Michael Gattozzi</li>
+              <li>3+ Years of Rust</li>
+              <li>wasm-wg member</li>
+              <li>Maker of groan inducing puns</li>
+              <li>Handle for everything: mgattozzi</li>
+              <li>@ me so I can get free dopamine</li>
+            </ul>
+          </section>
+          <!-- Michael No pictures go here
+          <section>
+          </section>
+          -->
+        </section>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+        <section>
+          <section>
+            What's in your Future?
+          </section>
+          <section>
+            A Future is an expression of a computation that will happen
+          </section>
+          <section>
+            This means that at some point you can actually calculate some kind of value that you can
+            use!
+          </section>
+          <section>
+            However, a Future on it's own cannot execute. We need something to get it to do some
+            actual work.
+          </section>
+          <section>
+            How do we do that? Polling it with an Event Loop!
+          </section>
+        </section>
+
+        <section>
+          <section>
+            Poll Me Maybe
+          </section>
+          <section>
+            <section>
+              How Futures act if you don't poll them for values
+            </section>
+            <img src="assets/tomorrow.jpg">
+          </section>
+          <section>
+            What is Poll?
+          </section>
+          <section>
+            <pre>
+              <code>
+              enum Poll&lt;T&gt; {
+                Ready(T),
+                Pending
+              }
+              </code>
+            </pre>
+          </section>
+          <section>
+            When we poll a Future we're asking it whether it has computed the value yet!
+          </section>
+          <section>
+            If it does we get the value we wanted or it get's scheduled to continue to run.
+            We can ask again later if it's ready!
+          </section>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
 </html>
