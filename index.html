@@ -1,10 +1,11 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>reveal.js</title>
+    <title>Run Await With Me</title>
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/black.css">
@@ -14,122 +15,347 @@
 
     <!-- Printing and PDF exports -->
     <script>
-      var link = document.createElement( 'link' );
-      link.rel = 'stylesheet';
-      link.type = 'text/css';
-      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-      document.getElementsByTagName( 'head' )[0].appendChild( link );
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
     </script>
-  </head>
-  <body>
-    <div class="reveal">
-      <div class="slides">
+</head>
 
-        <!--
-          1st Slide
-          Mostly just the title and getting people to use the updated version. If we need to pin
-          day of this can be modified. This is then followed by introductions
-        -->
-        <section>
-          <section>
-            Async/Await<br>RustConf 2018
-          </section>
-          <section>
-            Before we get started
-            <pre><code>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Introductions -->
+            <section>
+                <section>
+                    Run Await With Me
+                    <br>RustConf 2018 Async/Await Class
+                </section>
+                <section>
+                    Before we get started
+                    <pre><code>
               rustup override set nightly
             </code></pre>
-          </section>
-          <section>
-            <section>
-              Introduction
+                </section>
+                <section>
+                    Big thanks to cramertj and aturon for helping with this class through planning, code, and more
+                </section>
+                <section>
+                    <section>
+                        Introduction
+                    </section>
+                    <img src="assets/mgattozzi.jpg" style="float: right; width: 40%">
+                    <ul style="width: 50%;">
+                        <li>Michael Gattozzi</li>
+                        <li>3+ Years of Rust</li>
+                        <li>wasm-wg member</li>
+                        <li>Maker of groan inducing puns</li>
+                        <li>Anime nerd</li>
+                        <li>Handle for everything: mgattozzi</li>
+                        <li>@ me so I can get free dopamine</li>
+                    </ul>
+                </section>
+                <section>
+                    <img src="assets/michaelno1.png">
+                </section>
+                <section>
+                    <img src="assets/michaelno2.png">
+                </section>
+                <section>
+                    <img src="assets/michaelno3.png">
+                </section>
+                <section>
+                    <img src="assets/michaelno4.png">
+                </section>
+                <section>
+                    <img src="assets/michaelno5.png">
+                </section>
+                <section>
+                    <img src="assets/michaelno6.png">
+                </section>
+                <section>
+                    A few quick rules
+                </section>
+                <section>
+                    If I make a reference you don't understand ask me about it during breaks
+                    I'm happy to explain it so you too can hate how good the puns are :D
+                </section>
+                <section>
+                    It's okay to not know things
+                </section>
+                <section>
+                    Questions are good and encouraged! Depending on complexity and time, I might
+                    punt them to breaks or after the class to answer them 
+                </section>
+                <section>
+                    Have fun! We're learning exciting new things together!
+                </section>
             </section>
-            <img src="assets/mgattozzi.jpg" style="float: right; width: 40%">
-            <ul style="width: 50%;">
-              <li>Michael Gattozzi</li>
-              <li>3+ Years of Rust</li>
-              <li>wasm-wg member</li>
-              <li>Maker of groan inducing puns</li>
-              <li>Handle for everything: mgattozzi</li>
-              <li>@ me so I can get free dopamine</li>
-            </ul>
-          </section>
-          <!-- Michael No pictures go here
-          <section>
-          </section>
-          -->
-        </section>
 
-        <section>
-          <section>
-            What's in your Future?
-          </section>
-          <section>
-            A Future is an expression of a computation that will happen
-          </section>
-          <section>
-            This means that at some point you can actually calculate some kind of value that you can
-            use!
-          </section>
-          <section>
-            However, a Future on it's own cannot execute. We need something to get it to do some
-            actual work.
-          </section>
-          <section>
-            How do we do that? Polling it with an Event Loop!
-          </section>
-        </section>
-
-        <section>
-          <section>
-            Poll Me Maybe
-          </section>
-          <section>
+            <!-- History tiiiiiiime -->
             <section>
-              How Futures act if you don't poll them for values
+                <section>
+                    We can't understand the Future if we don't understand the past
+                </section>
+                <section>
+                    We used to have "Green Threads" also known as M:N threading or light weight
+                    threads.
+                </section>
+                <section>
+                    This is similar to go routines or coroutines in other languages!
+                </section>
+                <section>
+                    <section>
+                        libgreen was introduced back in 2013!
+                    </section>
+                    <img src="assets/libgreen_add.png">
+                    <ul>
+                        <li>This PR is older than most people have been Rust Programmers</li>
+                        <li>https://github.com/rust-lang/rust/pull/10965</li>
+                    </ul>
+                </section>
+                <section>
+                    However, all was not well before Rust 1.0. libgreen was fundamentally at
+                    odds with Rust's ownership model 
+                </section>
+                <section>
+                    <section>
+                        libgreen was removed in 2014!
+                    </section>
+                    <img src="assets/libgreen_add.png">
+                    <ul>
+                        <li>This PR also removed the last of the runtime system</li>
+                        <li>That's right. Rust used to be Garbage Collected way back when</li>
+                        <li>https://github.com/rust-lang/rust/pull/18967</li>
+                    </ul>
+                </section>
+                <section>
+                    Would we ever be able to have this Async feature AND have it work with
+                    Rust's ownership system?
+                </section>
+                <section>
+                    Spoiler Alert: Yes
+                </section>
             </section>
-            <img src="assets/tomorrow.jpg">
-          </section>
-          <section>
-            What is Poll?
-          </section>
-          <section>
-            <pre>
-              <code>
-              enum Poll&lt;T&gt; {
-                Ready(T),
-                Pending
-              }
-              </code>
-            </pre>
-          </section>
-          <section>
-            When we poll a Future we're asking it whether it has computed the value yet!
-          </section>
-          <section>
-            If it does we get the value we wanted or it get's scheduled to continue to run.
-            We can ask again later if it's ready!
-          </section>
-        </section>
 
-      </div>
+            <!-- What's a Future -->
+            <section>
+                <section>
+                    Back to the Future
+                </section>
+                <section>
+                    <section>
+                        Many people trying to understand Futures
+                    </section>
+                    <img src="assets/fuuture.gif">
+                </section>
+                <section>
+                    That's okay we're here to learn all about it
+                </section>
+                <section>
+                    So what's a Future?
+                </section>
+                <section>
+                    A Future is an expression of a computation that will happen
+                </section>
+                <section>
+                    This means that at some point you can actually calculate some kind of value that you can use!
+                </section>
+                <section>
+                    However, a Future on it's own cannot execute. We need something to get it to do some actual work.
+                </section>
+                <section>
+                    How do we do that? Polling it with an Event Loop!
+                </section>
+            </section>
+
+            <!-- Polling -->
+            <section>
+                <section>
+                    Poll Me Maybe
+                </section>
+                <section>
+                    <section>
+                        How Futures act if you don't poll them for values
+                    </section>
+                    <img src="assets/tomorrow.jpg">
+                </section>
+                <section>
+                    What is Poll?
+                </section>
+                <section>
+                    <pre><code>
+                    enum Poll&lt;T&gt; {
+                        Ready(T),
+                        Pending
+                    }
+                    </code></pre>
+                </section>
+                <section>
+                    When we poll a Future we're asking it whether it has computed the value yet!
+                </section>
+                <section>
+                    If it is ready we get the value we wanted otherwise it is scheduled to continue to run. We can ask again later if it's ready!
+                </section>
+            </section>
+
+            <!-- Context -->
+            <section>
+                <section>
+                    <section>
+                        The Legend of Context: The Future Waker
+                    </section>
+                    <img src="assets/windwaker.jpg">
+                </section>
+            </section>
+
+            <!-- Future Trait and Waker -->
+            <section>
+                <section>
+                    Implementing the Future trait
+                </section>
+                <section>
+                    Implementing the Waker trait
+                </section>
+                <section>
+                    Sample bit of code together
+                </section>
+                <section>
+                    Build a Timer
+                </section>
+                <section>
+                    what they need to do
+                </section>
+            </section>
+
+            <section>
+                Break Time! :D
+            </section>
+            
+            <!-- Spawn Trait -->
+            <section>
+                <section>
+                    Implementing the Spawn Trait
+                </section>
+                <section>
+                    Implementing the spawn method
+                </section>
+                <section>
+                    Example
+                </section>
+            </section>
+            
+            <!-- TinyExecutor -->
+            <section>
+                <section>
+                    Roll your own Event Loop!
+                </section>
+                <section>
+                    <section>
+                        TinyExecutor
+                    </section>
+                    <img src="assets/exeggutor.png">
+                </section>
+                <section>
+                    What are the type definitions you'll be dealing with?
+                </section>
+                <section>
+                    TYYYYYYYYYYYPES and setup
+                </section>
+                <section>
+                    Okay time for you to implement Wake on your own!
+                </section>
+                <section>
+                    INSERT CODE HERE IF PEOPLE CANT GET IT!
+                </section>
+                <section>
+                    What does run need to do?
+                </section>
+                <section>
+                    Implement Run!
+                </section>
+                <section>
+                    Final code
+                </section>
+                <section>
+                    YOU CAN NOW RUN ASYNC CODE :D
+                </section>
+            </section>
+            
+            <section>
+                Break Time?! idk maybe
+            </section>
+            
+            <!-- async/await!() -->
+            <section>
+                <section>
+                    What does async code even look like?
+                </section>
+                <section>
+                    Sugar sugar sugar
+                </section>
+                <section>
+                    What does await!() even do?
+                </section>
+                <section>
+                    Expando macoro
+                </section>
+            </section>
+
+            <!-- Closing/Future Developments -->
+            <section>
+                <section>
+                    We're a couple hours into the Future
+                </section>
+                <section>
+                    If I polled you all on how confident you are with Futures
+                </section>
+                <section>
+                    I think I would get a response of Poll::Ready(Knowledge)
+                </section>
+                <section>
+                    Some cool things to look out for down the line
+                </section>
+                <section>
+                    futures-rs is a great abstraction over the std Future type
+                </section>
+                <section>
+                    tokio is a solid more efficient event loop that takes advantage of your OS's
+                    inbuilt one via mio
+                </section>
+                <section>
+                    What does all this mean?
+                </section>
+                <section>
+                    You'll have an understanding of what's going on under the hood but have a
+                    bunch of sweet toys that make it really easy to work with and use!
+                </section>
+                <section>
+                    Thank you all for coming!
+                </section>
+            </section>
+
+        </div>
     </div>
 
     <script src="lib/js/head.min.js"></script>
     <script src="js/reveal.js"></script>
 
     <script>
-      // More info about config & dependencies:
-      // - https://github.com/hakimel/reveal.js#configuration
-      // - https://github.com/hakimel/reveal.js#dependencies
-      Reveal.initialize({
-        dependencies: [
-          { src: 'plugin/markdown/marked.js' },
-          { src: 'plugin/markdown/markdown.js' },
-          { src: 'plugin/notes/notes.js', async: true },
-          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-        ]
-      });
+        // More info about config & dependencies:
+        // - https://github.com/hakimel/reveal.js#configuration
+        // - https://github.com/hakimel/reveal.js#dependencies
+        Reveal.initialize({
+            dependencies: [
+                { src: 'plugin/markdown/marked.js' },
+                { src: 'plugin/markdown/markdown.js' },
+                { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+            ]
+        });
     </script>
-  </body>
+</body>
+
 </html>
