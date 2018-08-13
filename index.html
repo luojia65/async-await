@@ -36,8 +36,8 @@
                 <section>
                     Before we get started
                     <pre><code>
-              rustup override set nightly
-            </code></pre>
+rustup override set nightly
+                    </code></pre>
                 </section>
                 <section>
                     <img src="assets/aaron.png">
@@ -61,22 +61,22 @@
                     </ul>
                 </section>
                 <section>
-                    <img src="assets/michaelno1.png">
+                    <img src="assets/michaelno1.png"></img>
                 </section>
                 <section>
-                    <img src="assets/michaelno2.png">
+                    <img src="assets/michaelno2.png"></img>
                 </section>
                 <section>
-                    <img src="assets/michaelno3.png">
+                    <img src="assets/michaelno3.png"></img>
                 </section>
                 <section>
-                    <img src="assets/michaelno4.png">
+                    <img src="assets/michaelno4.png"></img>
                 </section>
                 <section>
-                    <img src="assets/michaelno5.png">
+                    <img src="assets/michaelno5.png"></img>
                 </section>
                 <section>
-                    <img src="assets/michaelno6.png">
+                    <img src="assets/michaelno6.png"></img>
                 </section>
                 <section>
                     A few quick rules
@@ -84,23 +84,27 @@
                 <section>
                     If I make a reference you don't understand ask me about it during breaks
                     I'm happy to explain it so you too can hate how good the puns are :D
+                    <img src="assets/puns.png"></img>
                 </section>
                 <section>
                     It's okay to not know things
+                    <img src="assets/motivation.png"></img>
                 </section>
                 <section>
-                    Questions are good and encouraged! Depending on complexity and time, I might
-                    punt them to breaks or after the class to answer them 
+                    Questions are good and encouraged!
+                    <img src="assets/encourageyou.jpg"></img>
                 </section>
                 <section>
                     Have fun! We're learning exciting new things together!
+                    <img src="assets/havefun.gif"></img>
                 </section>
             </section>
 
             <!-- History tiiiiiiime -->
             <section>
                 <section>
-                    We can't understand the Future if we don't understand the past
+                    We can't understand the Future if we don't understand the past<br>
+                    <img src="assets/history.gif"></img>
                 </section>
                 <section>
                     We used to have "Green Threads" also known as M:N threading or light weight
@@ -113,7 +117,7 @@
                     <section>
                         libgreen was introduced back in 2013!
                     </section>
-                    <img src="assets/libgreen_add.png">
+                    <img src="assets/libgreen_add.png"></img>
                     <ul>
                         <li>This PR is older than most people have been Rust Programmers</li>
                         <li>https://github.com/rust-lang/rust/pull/10965</li>
@@ -122,12 +126,13 @@
                 <section>
                     However, all was not well before Rust 1.0. libgreen was fundamentally at
                     odds with Rust's ownership model 
+                    <img src="assets/atodds.jpg"></img>
                 </section>
                 <section>
                     <section>
                         libgreen was removed in 2014!
                     </section>
-                    <img src="assets/libgreen_add.png">
+                    <img src="assets/libgreen_add.png"></img>
                     <ul>
                         <li>This PR also removed the last of the runtime system</li>
                         <li>That's right. Rust used to be Garbage Collected way back when</li>
@@ -137,6 +142,7 @@
                 <section>
                     Would we ever be able to have this Async feature AND have it work with
                     Rust's ownership system?
+                    <img src="assets/aliens.png"></img>
                 </section>
                 <section>
                     Spoiler Alert: Yes
@@ -145,56 +151,74 @@
 
             <!-- What's a Future -->
             <section>
+
                 <section>
-                    Back to the Future
+                    Back to the Future<br>
+                    <img src="assets/backtothefuture.gif"></img>
                 </section>
+
                 <section>
-                    <section>
-                        Many people trying to understand Futures
-                    </section>
-                    <img src="assets/fuuture.gif">
+                    Many people trying to understand Futures<br>
+                    <img src="assets/fuuture.gif"></img>
                 </section>
+
                 <section>
-                    That's okay we're here to learn all about it
+                    That's okay we're here to learn all about it<br>
+                    <img src="assets/thumbsup.jpg"></img>
                 </section>
+                
                 <section>
-                    So what's a Future?
+                    You after all this<br>
+                    <img src="assets/blowinmymind.gif"></img>
                 </section>
+                
+                <section>
+                    So what's a Future?<br>
+                    <img src="assets/ehhhh.PNG"></img>
+                </section>
+                
                 <section>
                     A Future is an expression of a computation that will happen
                 </section>
+                
                 <section>
-                    This means that at some point you can actually calculate some kind of value that you can use!
+                    This means that at some point you can actually calculate some kind of value
+                    that you can use!
                 </section>
+                
                 <section>
-                    However, a Future on it's own cannot execute. We need something to get it to do some actual work.
+                    However, a Future on it's own cannot execute. We need something to
+                    get it to do some actual work.<br>
+                    <img src="assets/why.gif"></img>
                 </section>
+
                 <section>
                     How do we do that? Polling it with an Event Loop!
                 </section>
+                
             </section>
 
             <!-- Polling -->
             <section>
                 <section>
-                    Poll Me Maybe
+                    Poll Me Maybe<br>
+                    <img src="assets/ey.jpg"></img>
                 </section>
                 <section>
                     <section>
                         How Futures act if you don't poll them for values
                     </section>
-                    <img src="assets/tomorrow.jpg">
+                    <img src="assets/tomorrow.jpg"></img>
                 </section>
                 <section>
-                    What is Poll?
+                    What is Poll?<br>
+                    <img src="assets/well.gif"></img>
                 </section>
                 <section>
-                    <pre><code>
-                    enum Poll&lt;T&gt; {
-                        Ready(T),
-                        Pending
-                    }
-                    </code></pre>
+                    <pre><code>enum Poll&lt;T&gt; {
+    Ready(T),
+    Pending
+}</code></pre>
                 </section>
                 <section>
                     When we poll a Future we're asking it whether it has computed the value yet!
@@ -207,48 +231,213 @@
             <!-- Context -->
             <section>
                 <section>
-                    <section>
-                        The Legend of Context: The Future Waker
-                    </section>
-                    <img src="assets/windwaker.jpg">
+                    The Legend of Context: The Future Waker<br>
+                    <img src="assets/windwaker.jpg"></img>
                 </section>
-            </section>
-
-            <!-- Future Trait and Waker -->
-            <section>
                 <section>
-                    Implementing the Future trait
+                    Okay so what the heck is Waking? What's Context?<br>
+                    <img src="assets/huuh.png"></img>
+                </section>
+                <section>
+                    Let's look at how an event loop with Futures works at a higher level
+                </section>
+                <section>
+                    We put our Future in some kind of queue
+                </section>
+                <section>
+                    We then poll it. If it's completed we can do something with the value
+                </section>
+                <section>
+                    If we don't, we wake up the future to be put back in the queue to be polled again later
+                </section>
+                <section>
+                    Waker is a trait we can implement for a type that knows how to put things back in the queue
+                    until our Future is complete
+                </section>
+                <section>
+                    Does this sound a bit confusing?<br>
+                    <video data-autoplay src="assets/idontknowwhatthatmeans.mp4"></video>
+                </section>
+                <section>
+                    Let's do a concrete example together!<br>
+                    <img src="assets/together.jpg"></img>
+                </section>
+                <section>
+                    Open up that Cargo.toml and change it to look something like this:
+                    <pre><code>cargo-features=["edition"]
+
+[package]
+name = "looper"
+version = "0.1.0"
+authors = ["Michael Gattozzi &lt;mgattozzi@gmail.com&gt;"]
+edition = '2018'
+                            
+[[bin]]
+path = "src/waker.rs"
+name = "waker"
+                            
+[dependencies]</code></pre>
+                </section>
+                <section>
+                    Cool now we have it set so we have 2018 edition enabled automatically!
+                </section>
+                <section>
+                    We also now have this example set so all we need to do to run it is
+                    <pre><code>cargo run --bin waker</code></pre>
+                </section>
+                <section>
+                    Okay create a file src/waker.rs and open it up
+                </section>
+                <section>
+                    Add this to the top to enable the nightly features we need
+                    <pre><code>#![feature(arbitrary_self_types, futures_api, pin)]</code></pre>
+                </section>
+                <section>
+                    What's Rust code without some imports? Here's what we'll need
+                    <pre><code>use std::sync::mpsc::{sync_channel, SyncSender};
+use std::future::{Future, FutureObj};
+use std::mem::PinMut;
+use std::sync::{Arc, Mutex};
+use std::task::{
+    Context,
+    Executor,
+    local_waker_from_nonlocal,
+    Poll,
+    SpawnObjError,
+    Wake,
+};</code></pre>
+                </section>
+                <section>
+                    Alright so we need some kind of executor that can spawn Futures in order to create a Context
+                    type. We won't be using it in this example so we'll create a stub to satsify our instatiable
+                    overlord rustc.
+                </section>
+                <section>
+                    <pre><code>struct Exec;
+impl Executor for Exec {
+    fn spawn_obj(&amp;mut self, _obj: FutureObj&lt;'static, ()&gt;) 
+        -> Result&lt;(), SpawnObjError&gt;
+    {
+        Ok(())
+    }
+}</code></pre>
+                </section>
+                <!-- Future Trait and Waker -->
+                <section>
+                    Okay, so we're now gonna implement the Future trait ourselves
+                </section>
+                <section>
+                    While this will let you see how this works under the hood you normally
+                    should just tag functions or things with async.
+                </section>
+                <section>
+                    Why? rustc will handle when tasks need to be woken up when polled or if
+                    it's ready. You won't need to think about all the logic involved with that.
+                </section>
+                <section>
+                    Let's create a simple type like so:
+                    <pre><code>struct MyFuture(bool);</code></pre>
+                </section>
+                <section>
+                    The Future when polled will return Poll::Pending the first time and Poll::Ready(()) the
+                    second time it's polled
+                </section>
+                <section>
+                    <pre><code>impl Future for MyFuture {
+    type Output = ();
+    fn poll(mut self: PinMut&lt;Self&gt;, cx: &amp;mut Context)
+        -> Poll&lt;Self::Output&gt;
+    {
+        if self.0 {
+            return Poll::Ready(());
+        }
+        self.0 = true;
+        cx.waker().wake();
+        Poll::Pending
+    }
+}</code></pre>
                 </section>
                 <section>
                     Implementing the Waker trait
                 </section>
                 <section>
-                    Sample bit of code together
+                    <img src="assets/pollpoll.png"></img>
                 </section>
                 <section>
-                    Build a Timer
+                    <pre><code>struct Task {
+    sender: SyncSender&lt;Arc&lt;Task&gt;&gt;,
+    future: Mutex&lt;MyFuture&gt;
+}
+impl Wake for Task {
+    fn wake(arc_self: &amp;Arc&lt;Self&gt;>) {
+        let cloned = arc_self.clone();
+        let _ = arc_self.sender.send(cloned);
+    }
+}</code></pre>
                 </section>
                 <section>
-                    what they need to do
+                    <pre><code>fn main() {
+    let mut exec = Exec;
+    let (tx, rx) = sync_channel(1000);
+    let task = Arc::new(Task { 
+        future: Mutex::new(MyFuture(false)),
+        sender: tx.clone()
+    });
+    let waker = local_waker_from_nonlocal(task.clone());
+    let cx = &amp;mut Context::new(&amp;waker, &amp;mut exec);
+    let _ = tx.send(task);</code></pre>
+                </section>
+                <section>
+                    <pre><code>    while let Ok(task) = rx.recv() {
+        let mut future = task.future.lock().unwrap();
+        match PinMut::new(&amp;mut *future).poll(cx) {
+            Poll::Pending =&gt; println!("Pending"),
+            Poll::Ready(()) =&gt; {
+                println!("Ready");
+                break;
+            },
+        }
+    }
+}</code></pre>
+                </section>
+                <section>
+                     Now execute it! You should see Pending printed out then Ready and it will cancel
+                </section>
+                <section>
+                    Okay now it's your turn to implement a Future!
+                </section>
+                <section>
+                    Don't worry you already have most of what you need!
+                </section>
+                <section>
+                    <section>
+                        Build a Future
+                    </section>
+                    <ul>
+                        <li>
+                            Your goal is to create a Future that can wait n seconds and will print out
+                            when n seconds have passed.
+                        </li>
+                        <li>
+                            You will need std::time::{Instant, Duration};
+                        </li>
+                        <li>
+                            You will need a new type and implement Future for it
+                        </li>
+                        <li>
+                            If the time alloted hasn't passed wake the Future. We don't want to block
+                        </li>
+                        <li>
+                            Don't use thread::sleep to get a certain period of time to pass
+                        </li>
+                    </ul>
                 </section>
             </section>
 
             <section>
-                Break Time! :D
+                Break Time y'all have worked hard!
             </section>
             
-            <!-- Spawn Trait -->
-            <section>
-                <section>
-                    Implementing the Spawn Trait
-                </section>
-                <section>
-                    Implementing the spawn method
-                </section>
-                <section>
-                    Example
-                </section>
-            </section>
             
             <!-- TinyExecutor -->
             <section>
@@ -256,55 +445,286 @@
                     Roll your own Event Loop!
                 </section>
                 <section>
-                    <section>
-                        TinyExecutor
-                    </section>
+                    TinyExecutor<br>
                     <img src="assets/exeggutor.png">
                 </section>
                 <section>
-                    What are the type definitions you'll be dealing with?
+                    Don't worry it won't be like this<br>
+                    <img src="assets/drawtheowl.jpg">
+                </section>
+                <!-- Spawn Trait -->
+                <section>
+                    Before we get started on this we need to cover a few things like
+                    setting up the file, the Executor trait, and then what types you
+                    will have for the whole thing
                 </section>
                 <section>
-                    TYYYYYYYYYYYPES and setup
+                    Open up that Cargo.toml and change it to have this in it:
+                    <pre><code>[[bin]]
+path = "src/tiny.rs"
+name = "tiny"</code></pre>
                 </section>
                 <section>
-                    Okay time for you to implement Wake on your own!
+                    To run this code all you need to run now is:
+                    <pre><code>cargo run --bin waker</code></pre>
                 </section>
                 <section>
-                    INSERT CODE HERE IF PEOPLE CANT GET IT!
+                    Okay create a file src/tiny.rs and open it up
                 </section>
                 <section>
-                    What does run need to do?
+                    Add this to the top to enable the nightly features we need
+                    <pre><code>#![feature(async_await, await_macro, futures_api, pin)]</code></pre>
                 </section>
                 <section>
-                    Implement Run!
+                    Here's all the imports you'll need:
+                    <pre><code>use std::future::{Future, FutureObj};
+use std::mem::PinMut;
+use std::sync::{Arc, Mutex};
+use std::sync::mpsc::{
+    sync_channel, 
+    SyncSender, 
+    SendError, 
+    Receiver
+};</code></pre>
                 </section>
                 <section>
-                    Final code
+                    <pre><code>use std::task::{
+    self,
+    Executor,
+    local_waker_from_nonlocal,
+    Poll,
+    SpawnErrorKind,
+    SpawnObjError,
+    Wake,
+};</code></pre>
                 </section>
                 <section>
-                    YOU CAN NOW RUN ASYNC CODE :D
+                    Alright now let's add two type definitions you'll need
+                </section>
+                <section>
+                    <pre><code>struct Exec {
+    task_sender: SyncSender&lt;Arc&lt;Task&gt;&gt;,
+    task_receiver: Receiver&lt;Arc&lt;Task&gt;&gt;,
+}</code></pre>
+                </section>
+                <section>
+                    <pre><code>struct Task {
+    future: Mutex&lt;Option&lt;FutureObj&lt;'static, ()&gt;&gt;&gt;;,
+    task_sender: SyncSender&lt;Arc&lt;Task&gt;&gt;,
+}</code></pre>
+                </section>
+                <section>
+                    These are all the types you'll need and get for this exercise. Let's cover how to
+                    implement Executor, what it's used for, and the definition for our event loop.
+                </section>
+                <section>
+                    A little earlier we saw a stubbed out Executor. So what is it?
+                </section>
+                <section>
+                    It's what spawns new Futures into your queue of Futures that need to be run
+                </section>
+                <section>
+                    If a Waker puts Futures back in the queue then an Executor spawns them into it
+                </section>
+                <section>
+                    So what does our implementation going to look like?
+                </section>
+                <section>
+                    <pre><code>impl&lt;'a&gt; Executor for &amp;'a Exec {
+    fn spawn_obj(&amp;mut self, future: FutureObj&lt;'static, ()&gt;)
+        -> Result&lt;(), SpawnObjError&gt;
+    {
+        let task = Arc::new(Task {
+            future: Mutex::new(Some(future)),
+            task_sender: self.task_sender.clone(),
+        });</code></pre>
+                </section>
+                <section>
+                    <pre><code>        self.task_sender
+            .send(task)
+            .map_err(|SendError(task)| {
+                SpawnObjError {
+                    kind: SpawnErrorKind::shutdown(),
+                    future: task.future
+                        .lock()
+                        .unwrap()
+                        .take()
+                        .unwrap(),
+                }
+            })
+    }
+}</code></pre>
+                </section>
+                <section>
+                    Now it's your turn to code<br>
+                    <img src="assets/typing.gif">
+                </section>
+                <section>
+                    <section>
+                        Build the rest of TinyExec
+                    </section>
+                    <ul style="font-size: 80%;">
+                        <li>
+                            Implement Waker for Task
+                        </li>
+                        <li>
+                            Make an impl Exec that contains the functions:
+                            <pre><code>fn new() -> Self
+fn run(&amp;self)</code></pre>
+                        </li>
+                        <li>
+                            run should be a loop that takes a task off of task_reciever
+                        </li>
+                        <li>
+                            Once it has the task check that it has a future that can be executed
+                        </li>
+                        <li>
+                            If it does create a LocalWaker and Context object with a reference to the executor
+                        </li>
+                        <li>
+                            PinMut the future and poll it and if it's still Pending make sure that the Task has the
+                            Future back inside it
+                        </li>
+                        <li>
+                            Create a main function, create a new executor, spawn a new future into it and execute it
+                        </li>
+                        <li>
+                            <pre><code>FutureObj::new(Box::new(async { println!("I'm a spawned future")})</code></pre>
+                        </li>
+                    </ul>
                 </section>
             </section>
             
             <section>
-                Break Time?! idk maybe
+                Alright time for another quick break
             </section>
             
             <!-- async/await!() -->
             <section>
+
                 <section>
-                    What does async code even look like?
+                    async/await!()
+                </section>
+                
+                <section>
+                    We've been talking a lot about how to execute async functions but what even is one?
+                    Where does await come into this whole thing?
+                </section>
+                
+                <section>
+                    We spent some time manually implementing a Future, but that was tedious. We had to
+                    keep track of state, how to make sure it was ready, etc. That's too much work!
+                </section>
+                
+                <section>
+                    This is where the async keyword comes in it automatically turns functions, closures, and
+                    expressions asynchronous for us!
+                </section>
+                
+                <section>
+                    <pre><code>fn cinderella() {
+    println!("I wish I could go to the event loop ball");
+}</code></pre>
+                </section>
+                
+                <section>
+                    <pre><code>async fn cinderella() {
+    println!("I can go to the event loop ball now!");
+}</code></pre>
+                </section>
+                
+                <section>
+                    rustc transforming a function into an async function<br>
+                    <video data-autoplay src="assets/asynctransform.mp4"></video>
+                </section>
+                
+                <section>
+                    Neat huh? Okay so if that's async what's await!(). Why is it even a macro?
+                </section>
+                
+                <section>
+                    await lets you use Futures in Futures and get values from Futures in your Futures
+                </section>
+                
+                <section>
+                    <img src="assets/yodawg.jpg"></img>
+                </section>
+                
+                <section>
+                    Here's a simple example with await!()
+                    <pre><code>async fn second() {
+    println!("Second");
+}
+async fn third() {
+    println!("Third");
+}
+async fn first() {
+    let third = third();
+    let second = second();
+    println!("First");
+    await!(second);
+    await!(third);
+}</code></pre>
+                </section>
+                
+                <section>
+                    So now that we know it will execute a Future inside our function why is it a macro?
+                </section>
+                
+                <section>
+                    We still want to play around with it and nail down a good design. Choosing the interface
+                    without experimentation locks us in.
+                </section>
+                
+                <section>
+                    It's like when we had try!() then eventually had ?<br>
+                    await!() will become just await eventually
+                </section>
+                
+                <section>
+                    Here's what it might look like
+                    <pre><code>async fn second() {
+    println!("Second");
+}
+async fn third() {
+    println!("Third");
+}
+async fn first() {
+    let third = third();
+    let second = second();
+    println!("First");
+    await second;
+    await third;
+}</code></pre>
+                </section>
+
+                <section>
+                    It's a macro though. So what does that even look like?
+                </section>
+
+                <section>
+                    Currently it looks like this
+                    <pre style="font-size: 50%;"><code>macro_rules! await {
+    ($e:expr) => { {
+        let mut pinned = $e;
+        loop {
+            if let $crate::task::Poll::Ready(x) =
+                $crate::future::poll_in_task_cx(unsafe {
+                    $crate::mem::PinMut::new_unchecked(&amp;mut pinned)
+                })
+            {
+                break x;
+            }
+            yield
+        }
+    } }
+}</code></pre>
                 </section>
                 <section>
-                    Sugar sugar sugar
+                    async/await are not hard! What's hard is getting Futures to run,
+                    but you've already done the hard work!
                 </section>
-                <section>
-                    What does await!() even do?
-                </section>
-                <section>
-                    Expando macoro
-                </section>
+
             </section>
 
             <!-- Closing/Future Developments -->
@@ -322,21 +742,40 @@
                     Some cool things to look out for down the line
                 </section>
                 <section>
-                    futures-rs is a great abstraction over the std Future type
+                    Futures-rs is an abstraction over Futures<br>
+                    <img src="assets/futuresrs.png"><br>
+                    Nice iterator like adaptors for Futures
                 </section>
                 <section>
-                    tokio is a solid more efficient event loop that takes advantage of your OS's
-                    inbuilt one via mio
+                    Tokio is a solid more efficient event loop for you to use!<br>
+                    <img src="assets/tokio.png"><br>
+                    No need for you to make an event loop
                 </section>
                 <section>
-                    What does all this mean?
+                    What does this all mean?<br>
+                    <img src="assets/itjustworks.jpg"></img>
                 </section>
                 <section>
-                    You'll have an understanding of what's going on under the hood but have a
-                    bunch of sweet toys that make it really easy to work with and use!
+                    You'll have an understanding of what your code is doing under the hood
                 </section>
                 <section>
-                    Thank you all for coming!
+                    You'll appreciate those nice libraries and abstractions
+                </section>
+                <section>
+                    They won't be black magic now though
+                </section>
+                <section>
+                    Unfortunately this is the end of the class
+                </section>
+                <section>
+                    It's time to go<br>
+                    <img src="assets/dontwannago.gif"></img>
+                </section>
+                <section>
+                    Thank you all for coming!<br>
+                    <img src="assets/end.gif"></img>
+                </section>
+                <section>
                 </section>
             </section>
 
