@@ -30,8 +30,8 @@
             <!-- Introductions -->
             <section>
                 <section>
-                    Run Await With Me
-                    <br>Asynchronous Programming at RustConf 2018
+                    <h1>Run Await With Me</h1>
+                    Asynchronous Programming at RustConf 2018
                 </section>
                 <section>
                     Before we get started
@@ -104,14 +104,14 @@ $ rustup override set nightly
                 </section>
                 <section>
                     Have fun! We're learning exciting new things together!
-                    <img src="assets/havefun.gif"></img>
+                    <img src="assets/learning.gif"></img>
                 </section>
             </section>
 
             <!-- History tiiiiiiime -->
             <section>
                 <section>
-                    The past and present of Future<br>
+                    The past and present of Futures<br>
                     <img src="assets/history.gif"></img>
                 </section>
                 <section>
@@ -194,6 +194,7 @@ $ rustup override set nightly
                         <li>Executor polls a Future</li>
                         <li>Future says "I'm not ready yet!"</li>
                         <li>Executor goes to sleep until Future sends a wakeup</li>
+                    </ul>
                 </section>
             </section>
 
@@ -213,7 +214,7 @@ $ rustup override set nightly
                     What is Poll?<br>
                     <img src="assets/well.gif"></img>
                 </section>
-                <section>
+                <section data-transition="none">
                     Simplified signature:
                     <pre><code>
 enum Poll&lt;T&gt; {
@@ -223,7 +224,23 @@ enum Poll&lt;T&gt; {
 
 trait Future {
     type Output;
-    fn poll(&amp;mut self, wake: fn()) &rarr; Poll&lt;Self::Output&gt;;
+    fn poll(&amp;mut self, wake: fn())
+        &rarr; Poll&lt;Self::Output&gt;;
+}
+                    </code></pre>
+                </section>
+                <section data-transition="none">
+                    The real thing:
+                    <pre><code>
+enum Poll&lt;T&gt; {
+    Ready(T),
+    Pending
+}
+
+trait Future {
+    type Output;
+    fn poll(self: PinMut&lt;Self&gt;, cx: &amp;mut task::Context)
+        &rarr; Poll&lt;Self::Output&gt;;
 }
                     </code></pre>
                 </section>
@@ -232,161 +249,92 @@ trait Future {
             <!-- Context -->
             <section>
                 <section>
-                    The Legend of Context: The Future Waker<br>
-                    <img src="assets/windwaker.jpg"></img>
-                </section>
-                <section>
-                    Let's do a concrete example together!<br>
+                    <h1>Concrete example time!</h1>
                     <img src="assets/together.jpg"></img>
                 </section>
                 <section>
+                    Let's make the simplest possible future, `ready`.
                     <pre><code>
- $ cargo new my_executor --bin
- $ cd my_executor
- $ vim Cargo.toml # emacs is fine, too, I guess
+fn ready(x: i32) &rarr; impl Future&lt;Output = i32&gt; {
+    ...
+}
+                    </code></pre>
+                    <ul>
+                        <li class = "fragment fade-in">Takes `i32` as input</li>
+                        <li class = "fragment fade-in">Returns an immediately-ready Future</li>
+                    </ul>
+                </section>
+                <section>
+                    <pre><code data-noescape data-trim>
+struct Ready { value: i32 }
+
+fn ready(value: i32) &rarr; Ready {
+    Ready { value }
+}
+<span class="fragment fade-in">
+impl Future for Ready {
+    type Output = <span class="fragment fade-in">i32;</span>
+    fn poll(self: PinMut<Self>, cx: &amp;mut task::Context)
+        &rarr; Poll&lt;Self::Output&gt;
+    {
+        <span class="fragment fade-in">Poll::Ready(<span class="fragment fade-in">self.value</span>)</span>
+    }
+}
+</span>
                     </code></pre>
                 </section>
                 <section>
-                    Add the missing lines to make it look like this:
-                    <pre><code>cargo-features=["edition"] #------ add this one
+                  Most futures aren't immediately ready.
+                  <ul>
+                      <li class="fragment fade-in">Return Poll::Pending</li>
+                      <li class="fragment fade-in">Schedule to receive wakeup</li>
+                      <li class="fragment fade-in">Store "Waker" type (callback fn)</li>
+                  </ul>
+                </section>
+                <section>
+                  The Task Context and the Waker Type
+                  <pre><code data-trim>
+struct Context { ... }
+impl Context {
+    /// Returns the waker for the current task
+    fn waker(&amp;self) &rarr; &amp;Waker { ... }
+}
 
-[package]
-name = "my_executor"
-version = "0.1.0"
-authors = ["Michael Gattozzi &lt;mgattozzi@gmail.com&gt;"]
-edition = "2018" # ------ and this one
-
-# and these ones-- this will be our first binary target,
-# but we'll add others later.
-[[bin]]
-path = "src/waker.rs"
-name = "waker"
+struct Waker { ... }
+impl Waker {
+    /// Wakes up the task associated with this `Waker`.
+    fn wake(&amp;self) { ... }
+}
                   </code></pre>
                 </section>
                 <section>
-                    Cool now we have it set so we have 2018 edition enabled automatically!
-                </section>
-                <section>
-                    We also now have this example set so all we need to do to run it is
-                    <pre><code>cargo run --bin waker</code></pre>
-                </section>
-                <section>
-                    Okay create a file src/waker.rs and open it up
-                </section>
-                <section>
-                    Add this to the top to enable the nightly features we need
-                    <pre><code>#![feature(arbitrary_self_types, futures_api, pin)]</code></pre>
-                </section>
-                <section>
-                    What's Rust code without some imports? Here's what we'll need
-                    <pre><code>use std::sync::mpsc::{sync_channel, SyncSender};
-use std::future::{Future, FutureObj};
-use std::mem::PinMut;
-use std::sync::{Arc, Mutex};
-use std::task::{
-    Context,
-    Executor,
-    local_waker_from_nonlocal,
-    Poll,
-    SpawnObjError,
-    Wake,
-};</code></pre>
-                </section>
-                <section>
-                    Alright so we need some kind of executor that can spawn Futures in order to create a Context
-                    type. We won't be using it in this example so we'll create a stub to satsify our instatiable
-                    overlord rustc.
-                </section>
-                <section>
-                    <pre><code>struct Exec;
-impl Executor for Exec {
-    fn spawn_obj(&amp;mut self, _obj: FutureObj&lt;'static, ()&gt;)
-        -> Result&lt;(), SpawnObjError&gt;
-    {
-        Ok(())
-    }
-}</code></pre>
-                </section>
-                <!-- Future Trait and Waker -->
-                <section>
-                    Okay, so we're now gonna implement the Future trait ourselves
-                </section>
-                <section>
-                    While this will let you see how this works under the hood you normally
-                    should just tag functions or things with async.
-                </section>
-                <section>
-                    Why? rustc will handle when tasks need to be woken up when polled or if
-                    it's ready. You won't need to think about all the logic involved with that.
-                </section>
-                <section>
-                    Let's create a simple type like so:
-                    <pre><code>struct MyFuture(bool);</code></pre>
-                </section>
-                <section>
-                    The Future when polled will return Poll::Pending the first time and Poll::Ready(()) the
-                    second time it's polled
-                </section>
-                <section>
-                    <pre><code>impl Future for MyFuture {
-    type Output = ();
-    fn poll(mut self: PinMut&lt;Self&gt;, cx: &amp;mut Context)
-        -> Poll&lt;Self::Output&gt;
-    {
-        if self.0 {
-            return Poll::Ready(());
-        }
-        self.0 = true;
-        cx.waker().wake();
-        Poll::Pending
-    }
-}</code></pre>
-                </section>
-                <section>
-                    Implementing the Waker trait
-                </section>
-                <section>
-                    <img src="assets/pollpoll.png"></img>
-                </section>
-                <section>
-                    <pre><code>struct Task {
-    sender: SyncSender&lt;Arc&lt;Task&gt;&gt;,
-    future: Mutex&lt;MyFuture&gt;
+                    Let's make a Future that needs to be awoken!<br>
+                    <span class="fragment fade-in">Once.</span><br>
+                    <span class="fragment fade-in">Immediately.<pre><code data-trim>
+struct AlmostReady { ready: bool, value: i32 }
+
+fn almost_ready(value: i32) &rarr; AlmostReady {
+    AlmostReady { ready: false, value }
 }
-impl Wake for Task {
-    fn wake(arc_self: &amp;Arc&lt;Self&gt;>) {
-        let cloned = arc_self.clone();
-        let _ = arc_self.sender.send(cloned);
+                    </code></pre></span>
+                </section>
+                <section>
+                <pre><code data-noescape data-trim>
+struct AlmostReady { ready: bool, value: i32 }
+impl Future for AlmostReady {
+    type Output = i32;
+    fn poll(mut self: PinMut&lt;Self&gt;, cx: &amp;mut task::Context)
+        &rarr; Poll&lt;Self::Output&gt;
+    {
+        <span class="fragment fade-in">if self.ready {
+            Poll::Ready(self.value)
+        } else {
+            self.ready = true;
+            cx.waker().wake();
+            Poll::Pending
+        }</span>
     }
-}</code></pre>
-                </section>
-                <section>
-                    <pre><code>fn main() {
-    let mut exec = Exec;
-    let (tx, rx) = sync_channel(1000);
-    let task = Arc::new(Task {
-        future: Mutex::new(MyFuture(false)),
-        sender: tx.clone()
-    });
-    let waker = local_waker_from_nonlocal(task.clone());
-    let cx = &amp;mut Context::new(&amp;waker, &amp;mut exec);
-    let _ = tx.send(task);</code></pre>
-                </section>
-                <section>
-                    <pre><code>    while let Ok(task) = rx.recv() {
-        let mut future = task.future.lock().unwrap();
-        match PinMut::new(&amp;mut *future).poll(cx) {
-            Poll::Pending =&gt; println!("Pending"),
-            Poll::Ready(()) =&gt; {
-                println!("Ready");
-                break;
-            },
-        }
-    }
-}</code></pre>
-                </section>
-                <section>
-                     Now execute it! You should see Pending printed out then Ready and it will cancel
+}               </code></pre>
                 </section>
                 <section>
                     Okay now it's your turn to implement a Future!
@@ -395,26 +343,19 @@ impl Wake for Task {
                     Don't worry you already have most of what you need!
                 </section>
                 <section>
-                    <section>
-                        Build a Future
-                    </section>
+                    Build a Future
                     <ul>
-                        <li>
-                            Your goal is to create a Future that can wait n seconds and will print out
-                            when n seconds have passed.
-                        </li>
-                        <li>
-                            You will need std::time::{Instant, Duration};
-                        </li>
-                        <li>
-                            You will need a new type and implement Future for it
-                        </li>
-                        <li>
-                            If the time alloted hasn't passed wake the Future. We don't want to block
-                        </li>
-                        <li>
-                            Don't use thread::sleep to get a certain period of time to pass
-                        </li>
+                        <li>Create a future that will resolve after 2 seconds</li>
+                        <li>Don't block the event loop-- no sleeping on the main thread</li>
+                        <li>To get started, <pre><code data-noescape data-trim>
+$ git clone git@github.com:mgattozzi/async-await-class.git
+$ cd async-await-class
+$ vim src/timer.rs # or another editor of your choice
+$ cargo run --bin timer # to check your solution
+                        </code></pre></li>
+                        <li>Replace the FIXMEs with proper solutions!</li>
+                        <li>When done, you'll see the message "Completed future after 2s" </li>
+                        <li>Ask lots of questions! The more you ask, the more we all learn!</li>
                     </ul>
                 </section>
             </section>
@@ -426,7 +367,7 @@ impl Wake for Task {
             <!-- TinyExecutor -->
             <section>
                 <section>
-                    Roll your own Event Loop!
+                    Roll your own event Loop!
                 </section>
                 <section>
                     TinyExecutor<br>
@@ -436,146 +377,27 @@ impl Wake for Task {
                     Don't worry it won't be like this<br>
                     <img src="assets/drawtheowl.jpg">
                 </section>
-                <!-- Spawn Trait -->
                 <section>
-                    Before we get started on this we need to cover a few things like
-                    setting up the file, the Executor trait, and then what types you
-                    will have for the whole thing
+                    Open up the code!
+                    <pre><code data-trim>
+$ emacs src/executor.rs # or something ;)
+                    </code></pre>
                 </section>
                 <section>
-                    Open up that Cargo.toml and change it to have this in it:
-                    <pre><code>[[bin]]
-path = "src/tiny.rs"
-name = "tiny"</code></pre>
-                </section>
-                <section>
-                    To run this code all you need to run now is:
-                    <pre><code>cargo run --bin waker</code></pre>
-                </section>
-                <section>
-                    Okay create a file src/tiny.rs and open it up
-                </section>
-                <section>
-                    Add this to the top to enable the nightly features we need
-                    <pre><code>#![feature(async_await, await_macro, futures_api, pin)]</code></pre>
-                </section>
-                <section>
-                    Here's all the imports you'll need:
-                    <pre><code>use std::future::{Future, FutureObj};
-use std::mem::PinMut;
-use std::sync::{Arc, Mutex};
-use std::sync::mpsc::{
-    sync_channel,
-    SyncSender,
-    SendError,
-    Receiver
-};</code></pre>
-                </section>
-                <section>
-                    <pre><code>use std::task::{
-    self,
-    Executor,
-    local_waker_from_nonlocal,
-    Poll,
-    SpawnErrorKind,
-    SpawnObjError,
-    Wake,
-};</code></pre>
-                </section>
-                <section>
-                    Alright now let's add two type definitions you'll need
-                </section>
-                <section>
-                    <pre><code>struct Exec {
-    task_sender: SyncSender&lt;Arc&lt;Task&gt;&gt;,
-    task_receiver: Receiver&lt;Arc&lt;Task&gt;&gt;,
-}</code></pre>
-                </section>
-                <section>
-                    <pre><code>struct Task {
-    future: Mutex&lt;Option&lt;FutureObj&lt;'static, ()&gt;&gt;&gt;;,
-    task_sender: SyncSender&lt;Arc&lt;Task&gt;&gt;,
-}</code></pre>
-                </section>
-                <section>
-                    These are all the types you'll need and get for this exercise. Let's cover how to
-                    implement Executor, what it's used for, and the definition for our event loop.
-                </section>
-                <section>
-                    A little earlier we saw a stubbed out Executor. So what is it?
-                </section>
-                <section>
-                    It's what spawns new Futures into your queue of Futures that need to be run
-                </section>
-                <section>
-                    If a Waker puts Futures back in the queue then an Executor spawns them into it
-                </section>
-                <section>
-                    So what does our implementation going to look like?
-                </section>
-                <section>
-                    <pre><code>impl&lt;'a&gt; Executor for &amp;'a Exec {
-    fn spawn_obj(&amp;mut self, future: FutureObj&lt;'static, ()&gt;)
-        -> Result&lt;(), SpawnObjError&gt;
-    {
-        let task = Arc::new(Task {
-            future: Mutex::new(Some(future)),
-            task_sender: self.task_sender.clone(),
-        });</code></pre>
-                </section>
-                <section>
-                    <pre><code>        self.task_sender
-            .send(task)
-            .map_err(|SendError(task)| {
-                SpawnObjError {
-                    kind: SpawnErrorKind::shutdown(),
-                    future: task.future
-                        .lock()
-                        .unwrap()
-                        .take()
-                        .unwrap(),
-                }
-            })
-    }
-}</code></pre>
-                </section>
-                <section>
-                    Now it's your turn to code<br>
-                    <img src="assets/typing.gif">
-                </section>
-                <section>
-                    <section>
-                        Build the rest of TinyExec
-                    </section>
-                    <ul style="font-size: 80%;">
-                        <li>
-                            Implement Waker for Task
-                        </li>
-                        <li>
-                            Make an impl Exec that contains the functions:
-                            <pre><code>fn new() -> Self
-fn run(&amp;self)</code></pre>
-                        </li>
-                        <li>
-                            run should be a loop that takes a task off of task_reciever
-                        </li>
-                        <li>
-                            Once it has the task check that it has a future that can be executed
-                        </li>
-                        <li>
-                            If it does create a LocalWaker and Context object with a reference to the executor
-                        </li>
-                        <li>
-                            PinMut the future and poll it and if it's still Pending make sure that the Task has the
-                            Future back inside it
-                        </li>
-                        <li>
-                            Create a main function, create a new executor, spawn a new future into it and execute it
-                        </li>
-                        <li>
-                            <pre><code>FutureObj::new(Box::new(async { println!("I'm a spawned future")})</code></pre>
-                        </li>
+                    The primary building blocks here are:<br><br>
+                    <ul>
+                      <li>The Executor and Spawner types (channel ends)</li>
+                      <li>The Task type (a pair of Mutex<Future> and Spawner)</li>
                     </ul>
+                </section>
+                <section>
+                    Let's a look at the implementation of the `Spawn` trait together.
+                </section>
+                <section>
+                    Now, fill out the two FIXMEs to get a working executor!
+                    The `impl Wake for Task` one is easier, so we recommend
+                    starting with that. As always, please ask lots of questions
+                    and we'll do our best to assist. :)
                 </section>
             </section>
 
