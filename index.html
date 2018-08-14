@@ -31,19 +31,14 @@
             <section>
                 <section>
                     Run Await With Me
-                    <br>RustConf 2018 Async/Await Class
+                    <br>Asynchronous Programming at RustConf 2018
                 </section>
                 <section>
                     Before we get started
                     <pre><code>
-rustup override set nightly
+$ rustup update nightly
+$ rustup override set nightly
                     </code></pre>
-                </section>
-                <section>
-                    <img src="assets/aaron.png">
-                </section>
-                <section>
-                    Big thanks to cramertj and aturon for helping with this class through planning, code, and more
                 </section>
                 <section>
                     <section>
@@ -79,11 +74,24 @@ rustup override set nightly
                     <img src="assets/michaelno6.png"></img>
                 </section>
                 <section>
+                    <section>
+                        Introduction
+                    </section>
+                    <img src="assets/cramertj.jpg" style="float: right; width: 40%">
+                    <ul style="width: 50%;">
+                      <li>Taylor Cramer</li>
+                      <li>@cramertj on everything</li>
+                      <li>Oxidizing since early 2016</li>
+                      <li>Lang Design and Compiler Team Member</li>
+                      <li>WG Net Async Lead</li>
+                    </ul>
+                </section>
+                <section>
                     A few quick rules
                 </section>
                 <section>
-                    If I make a reference you don't understand ask me about it during breaks
-                    I'm happy to explain it so you too can hate how good the puns are :D
+                    Ask about missed references during breaks,<br>
+                    and don't hate on my puns :D
                     <img src="assets/puns.png"></img>
                 </section>
                 <section>
@@ -103,45 +111,39 @@ rustup override set nightly
             <!-- History tiiiiiiime -->
             <section>
                 <section>
-                    We can't understand the Future if we don't understand the past<br>
+                    The past and present of Future<br>
                     <img src="assets/history.gif"></img>
                 </section>
                 <section>
-                    We used to have "Green Threads" also known as M:N threading or light weight
-                    threads.
-                </section>
-                <section>
-                    This is similar to go routines or coroutines in other languages!
+                    Rust used to have lightweight userspace threads,<br>
+                    often called M:N threads or "green threads."
+                    <!-- mention similarities to goroutines -->
                 </section>
                 <section>
                     <section>
                         libgreen was introduced back in 2013!
                     </section>
                     <img src="assets/libgreen_add.png"></img>
-                    <ul>
-                        <li>This PR is older than most people have been Rust Programmers</li>
-                        <li>https://github.com/rust-lang/rust/pull/10965</li>
-                    </ul>
                 </section>
                 <section>
-                    However, all was not well before Rust 1.0. libgreen was fundamentally at
-                    odds with Rust's ownership model 
-                    <img src="assets/atodds.jpg"></img>
+                    Stack composed of runtime linked list of stacks:
+                    <ul>
+                        <li>Caused "stack thrashing"</li>
+                        <li>FFI expects large stacks</li>
+                    </ul>
                 </section>
                 <section>
                     <section>
                         libgreen was removed in 2014!
                     </section>
-                    <img src="assets/libgreen_add.png"></img>
+                    <img src="assets/libgreen_remove.png"></img>
                     <ul>
-                        <li>This PR also removed the last of the runtime system</li>
-                        <li>That's right. Rust used to be Garbage Collected way back when</li>
-                        <li>https://github.com/rust-lang/rust/pull/18967</li>
+                        <li>No more runtime system</li>
+                        <li>No more garbage collection</li>
                     </ul>
                 </section>
                 <section>
-                    Would we ever be able to have this Async feature AND have it work with
-                    Rust's ownership system?
+                    Is ergonomic async code possible in Rust?
                     <img src="assets/aliens.png"></img>
                 </section>
                 <section>
@@ -151,51 +153,48 @@ rustup override set nightly
 
             <!-- What's a Future -->
             <section>
-
                 <section>
                     Back to the Future<br>
                     <img src="assets/backtothefuture.gif"></img>
                 </section>
-
-                <section>
-                    Many people trying to understand Futures<br>
-                    <img src="assets/fuuture.gif"></img>
-                </section>
-
-                <section>
-                    That's okay we're here to learn all about it<br>
-                    <img src="assets/thumbsup.jpg"></img>
-                </section>
-                
-                <section>
-                    You after all this<br>
-                    <img src="assets/blowinmymind.gif"></img>
-                </section>
-                
                 <section>
                     So what's a Future?<br>
                     <img src="assets/ehhhh.PNG"></img>
                 </section>
-                
                 <section>
-                    A Future is an expression of a computation that will happen
+                    Future = asynchronous computation<br><br>
+                    <ul>
+                        <li>Network IO</li>
+                        <li>Message from another thread or computer</li>
+                        <li>Chained operations</li>
+                    </ul>
                 </section>
-                
                 <section>
-                    This means that at some point you can actually calculate some kind of value
-                    that you can use!
+                    In other languages:<br><br>
+                    <ul>
+                        <li>Future is a concrete type</li>
+                        <li>Actively driven to completion by runtime</li>
+                        <li>Methods create callbacks spawned onto an executor</li>
+                        <li>Allocation heavy (one per callback/map/and_then)</li>
+                    </ul>
                 </section>
-                
                 <section>
-                    However, a Future on it's own cannot execute. We need something to
-                    get it to do some actual work.<br>
-                    <img src="assets/why.gif"></img>
+                    In Rust:<br><br>
+                    <ul>
+                        <li>Future is a trait</li>
+                        <li>Does nothing unless passed to an executor and run</li>
+                        <li>Methods create wrapper types which run their children</li>
+                        <li>One allocation per top-level task</li>
+                    </ul>
                 </section>
-
                 <section>
-                    How do we do that? Polling it with an Event Loop!
+                    How are Rust futures run?<br><br>
+                    <ul>
+                        <li>Future spawned onto executor</li>
+                        <li>Executor polls a Future</li>
+                        <li>Future says "I'm not ready yet!"</li>
+                        <li>Executor goes to sleep until Future sends a wakeup</li>
                 </section>
-                
             </section>
 
             <!-- Polling -->
@@ -215,16 +214,18 @@ rustup override set nightly
                     <img src="assets/well.gif"></img>
                 </section>
                 <section>
-                    <pre><code>enum Poll&lt;T&gt; {
+                    Simplified signature:
+                    <pre><code>
+enum Poll&lt;T&gt; {
     Ready(T),
     Pending
-}</code></pre>
-                </section>
-                <section>
-                    When we poll a Future we're asking it whether it has computed the value yet!
-                </section>
-                <section>
-                    If it is ready we get the value we wanted otherwise it is scheduled to continue to run. We can ask again later if it's ready!
+}
+
+trait Future {
+    type Output;
+    fn poll(&amp;mut self, wake: fn()) &rarr; Poll&lt;Self::Output&gt;;
+}
+                    </code></pre>
                 </section>
             </section>
 
@@ -235,48 +236,32 @@ rustup override set nightly
                     <img src="assets/windwaker.jpg"></img>
                 </section>
                 <section>
-                    Okay so what the heck is Waking? What's Context?<br>
-                    <img src="assets/huuh.png"></img>
-                </section>
-                <section>
-                    Let's look at how an event loop with Futures works at a higher level
-                </section>
-                <section>
-                    We put our Future in some kind of queue
-                </section>
-                <section>
-                    We then poll it. If it's completed we can do something with the value
-                </section>
-                <section>
-                    If we don't, we wake up the future to be put back in the queue to be polled again later
-                </section>
-                <section>
-                    Waker is a trait we can implement for a type that knows how to put things back in the queue
-                    until our Future is complete
-                </section>
-                <section>
-                    Does this sound a bit confusing?<br>
-                    <video data-autoplay src="assets/idontknowwhatthatmeans.mp4"></video>
-                </section>
-                <section>
                     Let's do a concrete example together!<br>
                     <img src="assets/together.jpg"></img>
                 </section>
                 <section>
-                    Open up that Cargo.toml and change it to look something like this:
-                    <pre><code>cargo-features=["edition"]
+                    <pre><code>
+ $ cargo new my_executor --bin
+ $ cd my_executor
+ $ vim Cargo.toml # emacs is fine, too, I guess
+                    </code></pre>
+                </section>
+                <section>
+                    Add the missing lines to make it look like this:
+                    <pre><code>cargo-features=["edition"] #------ add this one
 
 [package]
-name = "looper"
+name = "my_executor"
 version = "0.1.0"
 authors = ["Michael Gattozzi &lt;mgattozzi@gmail.com&gt;"]
-edition = '2018'
-                            
+edition = "2018" # ------ and this one
+
+# and these ones-- this will be our first binary target,
+# but we'll add others later.
 [[bin]]
 path = "src/waker.rs"
 name = "waker"
-                            
-[dependencies]</code></pre>
+                  </code></pre>
                 </section>
                 <section>
                     Cool now we have it set so we have 2018 edition enabled automatically!
@@ -315,7 +300,7 @@ use std::task::{
                 <section>
                     <pre><code>struct Exec;
 impl Executor for Exec {
-    fn spawn_obj(&amp;mut self, _obj: FutureObj&lt;'static, ()&gt;) 
+    fn spawn_obj(&amp;mut self, _obj: FutureObj&lt;'static, ()&gt;)
         -> Result&lt;(), SpawnObjError&gt;
     {
         Ok(())
@@ -379,7 +364,7 @@ impl Wake for Task {
                     <pre><code>fn main() {
     let mut exec = Exec;
     let (tx, rx) = sync_channel(1000);
-    let task = Arc::new(Task { 
+    let task = Arc::new(Task {
         future: Mutex::new(MyFuture(false)),
         sender: tx.clone()
     });
@@ -437,8 +422,7 @@ impl Wake for Task {
             <section>
                 Break Time y'all have worked hard!
             </section>
-            
-            
+
             <!-- TinyExecutor -->
             <section>
                 <section>
@@ -481,9 +465,9 @@ name = "tiny"</code></pre>
 use std::mem::PinMut;
 use std::sync::{Arc, Mutex};
 use std::sync::mpsc::{
-    sync_channel, 
-    SyncSender, 
-    SendError, 
+    sync_channel,
+    SyncSender,
+    SendError,
     Receiver
 };</code></pre>
                 </section>
@@ -594,62 +578,62 @@ fn run(&amp;self)</code></pre>
                     </ul>
                 </section>
             </section>
-            
+
             <section>
                 Alright time for another quick break
             </section>
-            
+
             <!-- async/await!() -->
             <section>
 
                 <section>
                     async/await!()
                 </section>
-                
+
                 <section>
                     We've been talking a lot about how to execute async functions but what even is one?
                     Where does await come into this whole thing?
                 </section>
-                
+
                 <section>
                     We spent some time manually implementing a Future, but that was tedious. We had to
                     keep track of state, how to make sure it was ready, etc. That's too much work!
                 </section>
-                
+
                 <section>
                     This is where the async keyword comes in it automatically turns functions, closures, and
                     expressions asynchronous for us!
                 </section>
-                
+
                 <section>
                     <pre><code>fn cinderella() {
     println!("I wish I could go to the event loop ball");
 }</code></pre>
                 </section>
-                
+
                 <section>
                     <pre><code>async fn cinderella() {
     println!("I can go to the event loop ball now!");
 }</code></pre>
                 </section>
-                
+
                 <section>
                     rustc transforming a function into an async function<br>
                     <video data-autoplay src="assets/asynctransform.mp4"></video>
                 </section>
-                
+
                 <section>
                     Neat huh? Okay so if that's async what's await!(). Why is it even a macro?
                 </section>
-                
+
                 <section>
                     await lets you use Futures in Futures and get values from Futures in your Futures
                 </section>
-                
+
                 <section>
                     <img src="assets/yodawg.jpg"></img>
                 </section>
-                
+
                 <section>
                     Here's a simple example with await!()
                     <pre><code>async fn second() {
@@ -666,21 +650,21 @@ async fn first() {
     await!(third);
 }</code></pre>
                 </section>
-                
+
                 <section>
                     So now that we know it will execute a Future inside our function why is it a macro?
                 </section>
-                
+
                 <section>
                     We still want to play around with it and nail down a good design. Choosing the interface
                     without experimentation locks us in.
                 </section>
-                
+
                 <section>
                     It's like when we had try!() then eventually had ?<br>
                     await!() will become just await eventually
                 </section>
-                
+
                 <section>
                     Here's what it might look like
                     <pre><code>async fn second() {
@@ -770,6 +754,9 @@ async fn first() {
                 <section>
                     It's time to go<br>
                     <img src="assets/dontwannago.gif"></img>
+                </section>
+                <section>
+                    Big thanks to cramertj and aturon for helping with this class through planning, code, and more
                 </section>
                 <section>
                     Thank you all for coming!<br>
