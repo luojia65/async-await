@@ -41,6 +41,15 @@ $ rustup override set nightly
                     </code></pre>
                 </section>
                 <section>
+                    Lots to cover!<br><br>
+                    <ul>
+                        <li>Async Rust history</li>
+                        <li>Structure of futures</li>
+                        <li>Implement futures executor</li>
+                        <li>async/await and pinning</li>
+                    </ul>
+                </section>
+                <section>
                     <section>
                         Introduction
                     </section>
@@ -84,6 +93,7 @@ $ rustup override set nightly
                       <li>Oxidizing since early 2016</li>
                       <li>Lang Design and Compiler Team Member</li>
                       <li>WG Net Async Lead</li>
+                      <li>Googler working on Fuchsia</li>
                     </ul>
                 </section>
                 <section>
@@ -111,7 +121,7 @@ $ rustup override set nightly
             <!-- History tiiiiiiime -->
             <section>
                 <section>
-                    The past and present of Futures<br>
+                    <h2>The Past and Present of Futures</h2><br>
                     <img src="assets/history.gif"></img>
                 </section>
                 <section>
@@ -154,7 +164,7 @@ $ rustup override set nightly
             <!-- What's a Future -->
             <section>
                 <section>
-                    Back to the Future<br>
+                    <h1>Back to the Future</h1><br>
                     <img src="assets/backtothefuture.gif"></img>
                 </section>
                 <section>
@@ -201,7 +211,7 @@ $ rustup override set nightly
             <!-- Polling -->
             <section>
                 <section>
-                    Poll Me Maybe<br>
+                    <h2>Poll Me Maybe</h2><br>
                     <img src="assets/ey.jpg"></img>
                 </section>
                 <section>
@@ -361,13 +371,14 @@ $ cargo run --bin timer # to check your solution
             </section>
 
             <section>
-                Break Time y'all have worked hard!
+                <h1>Break Time</h1>
+                Y'all have worked hard!
             </section>
 
             <!-- TinyExecutor -->
             <section>
                 <section>
-                    Roll your own event Loop!
+                    <h1>Building a Futures Executor</h1>
                 </section>
                 <section>
                     TinyExecutor<br>
@@ -402,141 +413,161 @@ $ emacs src/executor.rs # or something ;)
             </section>
 
             <section>
-                Alright time for another quick break
+                <h1>Break 2</h1>
+                Electric Breakalloo<br>
+                <img src="assets/break2.gif" class="fragment fade-out">
             </section>
 
             <!-- async/await!() -->
             <section>
-
                 <section>
                     async/await!()
                 </section>
 
                 <section>
-                    We've been talking a lot about how to execute async functions but what even is one?
-                    Where does await come into this whole thing?
+                    What is Rust's async/await feature?<br><br>
+                    <ul>
+                        <li>Turns straight-line code into Future types</li>
+                        <li>Similar to how closures generate Fn types</li>
+                    </ul>
                 </section>
 
-                <section>
-                    We spent some time manually implementing a Future, but that was tedious. We had to
-                    keep track of state, how to make sure it was ready, etc. That's too much work!
-                </section>
-
-                <section>
-                    This is where the async keyword comes in it automatically turns functions, closures, and
-                    expressions asynchronous for us!
-                </section>
-
-                <section>
-                    <pre><code>fn cinderella() {
-    println!("I wish I could go to the event loop ball");
-}</code></pre>
-                </section>
-
-                <section>
-                    <pre><code>async fn cinderella() {
-    println!("I can go to the event loop ball now!");
-}</code></pre>
-                </section>
-
-                <section>
-                    rustc transforming a function into an async function<br>
-                    <video data-autoplay src="assets/asynctransform.mp4"></video>
-                </section>
-
-                <section>
-                    Neat huh? Okay so if that's async what's await!(). Why is it even a macro?
-                </section>
-
-                <section>
-                    await lets you use Futures in Futures and get values from Futures in your Futures
-                </section>
-
-                <section>
-                    <img src="assets/yodawg.jpg"></img>
-                </section>
-
-                <section>
-                    Here's a simple example with await!()
-                    <pre><code>async fn second() {
-    println!("Second");
+                <section data-transition="none">
+                    Chain Two Operations: Manual Future<pre><code data-trim>
+fn download_and_write_tweets(
+    user: String,
+    socket: Socket,
+) &rarr; impl Future&lt;Output = io::Result&lt;()&gt;&gt; {
+    TwoOps::First {
+        fut: pull_down_tweets(user),
+        socket_for_later: socket,
+    }
 }
-async fn third() {
-    println!("Third");
+
+enum TwoOps {
+    First {
+        fut: PullDownTweets
+        socket_for_later: Socket,
+    },
+    Second(WriteTweetsToSocket),
+    Taken,
 }
-async fn first() {
-    let third = third();
-    let second = second();
-    println!("First");
-    await!(second);
-    await!(third);
-}</code></pre>
-                </section>
 
-                <section>
-                    So now that we know it will execute a Future inside our function why is it a macro?
-                </section>
-
-                <section>
-                    We still want to play around with it and nail down a good design. Choosing the interface
-                    without experimentation locks us in.
-                </section>
-
-                <section>
-                    It's like when we had try!() then eventually had ?<br>
-                    await!() will become just await eventually
-                </section>
-
-                <section>
-                    Here's what it might look like
-                    <pre><code>async fn second() {
-    println!("Second");
-}
-async fn third() {
-    println!("Third");
-}
-async fn first() {
-    let third = third();
-    let second = second();
-    println!("First");
-    await second;
-    await third;
-}</code></pre>
-                </section>
-
-                <section>
-                    It's a macro though. So what does that even look like?
-                </section>
-
-                <section>
-                    Currently it looks like this
-                    <pre style="font-size: 50%;"><code>macro_rules! await {
-    ($e:expr) => { {
-        let mut pinned = $e;
+impl Future for TwoOps {
+    type Output = io::Result&lt;()&gt;;
+    fn poll(mut self: PinMut&lt;Self&gt;, cx: &amp;mut task::Context)
+        &rarrow; Poll&lt;Self::Output&gt;
+    {
         loop {
-            if let $crate::task::Poll::Ready(x) =
-                $crate::future::poll_in_task_cx(unsafe {
-                    $crate::mem::PinMut::new_unchecked(&amp;mut pinned)
-                })
-            {
-                break x;
+            match mem::replace(&amp;mut *self, TwoOps::Taken) {
+                TwoOps::First { fut, socket_for_later } =&gt; {
+                    match fut.poll_unpin(cx)? {
+                        Poll::Ready(tweets) =&gt; {
+                             *self = TwoOps::Second(write_tweets(tweets, socket_for_later));
+                        }
+                        Poll::Pending =&gt; {
+                            *self = TwoOps::First { fut, socket_for_later };
+                            return Poll::Pending;
+                        }
+                    }
+                }
+                TwoOps::Second(fut) =&gt; {
+                    match fut.poll_unpin(cx) {
+                        Poll::Ready(res) =&gt; {
+                            return Poll::Ready(res);
+                        }
+                        Poll::Pending =&gt; {
+                            *self = TwoOps::Second(fut);
+                            return Poll:Pending;
+                        }
+                    }
+                }
+                TwoOps::Taken =&gt; panic!("oh noes"),
             }
-            yield
         }
-    } }
-}</code></pre>
-                </section>
-                <section>
-                    async/await are not hard! What's hard is getting Futures to run,
-                    but you've already done the hard work!
+    }
+}
+                    </code></pre>
                 </section>
 
+                <section data-transition="none">
+                    Chain Two Operations: Combinators<pre><code data-trim>
+fn download_and_write_tweets(
+    user: String,
+    socket: Socket,
+) &rarr; impl Future&lt;Output = io::Result&lt;()&gt;&gt; {
+    pull_down_tweets(user)
+        .and_then(move |tweets| write_tweets(socket))
+}
+                    </code></pre>
+                </section>
+
+                <section data-transition="none">
+                    Chain Two Operations: async/await<pre><code data-trim>
+async fn download_and_write_tweets(
+    user: &amp;str,
+    socket: &amp;Socket,
+) &rarr; io::Result&lt;()&gt; {
+    let tweets = await!(pull_down_tweets(user))?;
+    await!(write_tweets(socket))
+}
+                    </code></pre>
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <h1>Pinning</h1><br><br>
+                    A Quick Overview
+                </section>
+                <section>
+                    What type does this turn into?<pre><code data-trim>
+async fn do_with_str() {
+    let x = "foo".to_string();
+    let x_ref: &amp;str = &amp;x;
+    await!(thing_with_string(x_ref))
+}
+                    </code></pre>
+                </section>
+                <section>
+                    Maybe something like this?<pre><code data-trim>
+struct DoWith {
+    x: String,
+    // this holds a pointer to the field above!
+    thing_with_string_fut: Thing&lt;'magic&gt;;
+}
+                    </code></pre>
+                </section>
+                <section>
+                    When a future is polled, it may become self-referential,<br>
+                    so they must be "pinned".
+                </section>
+                <section>
+                    Once a type has been pinned, it isn't allowed to move.
+                </section>
+                <section>
+                    Some futures don't need to be kept in one place, so they<br>
+                    can be "unpinned" (via the `Unpin` trait).
+                </section>
+                <section>
+                    Questions on pinning?
+                </section>
             </section>
 
             <!-- Closing/Future Developments -->
             <section>
                 <section>
                     We're a couple hours into the Future
+                </section>
+                <section>
+                    We've learned a lot!<br><br>
+                    <ul>
+                        <li>Async Rust history</li>
+                        <li>Structure of Rust futures</li>
+                        <li>Implemented futures (ready, almost_ready, timer)</li>
+                        <li>Made an executor</li>
+                        <li>async/await and pinning</li>
+                    </ul>
                 </section>
                 <section>
                     If I polled you all on how confident you are with Futures
@@ -585,6 +616,7 @@ async fn first() {
                     <img src="assets/end.gif"></img>
                 </section>
                 <section>
+                    <h1>Questions?</h1>
                 </section>
             </section>
 
