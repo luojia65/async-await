@@ -259,7 +259,7 @@ trait Future {
             <!-- Context -->
             <section>
                 <section>
-                    <h1>Concrete example time!</h1>
+                    <h2>Concrete example time!</h2>
                     <img src="assets/together.jpg"></img>
                 </section>
                 <section>
@@ -354,7 +354,7 @@ impl Future for AlmostReady {
                 </section>
                 <section>
                     Build a Future
-                    <ul>
+                    <ul style="font-size: 90%">
                         <li>Create a future that will resolve after 2 seconds</li>
                         <li>Don't block the event loop-- no sleeping on the main thread</li>
                         <li>To get started, <pre><code data-noescape data-trim>
@@ -391,7 +391,7 @@ $ cargo run --bin timer # to check your solution
                 <section>
                     Open up the code!
                     <pre><code data-trim>
-$ emacs src/executor.rs # or something ;)
+$ emacs src/executor.rs # or your favorite choice of editor
                     </code></pre>
                 </section>
                 <section>
@@ -525,7 +525,7 @@ async fn download_and_write_tweets(
 async fn do_with_str() {
     let x = "foo".to_string();
     let x_ref: &amp;str = &amp;x;
-    await!(thing_with_string(x_ref))
+    await!(thing_with_string(x_ref));
 }
                     </code></pre>
                 </section>
