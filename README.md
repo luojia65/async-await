@@ -7,7 +7,7 @@ If you want to view the presentation:
 3. Use the down arrow key to navigate each section
 4. Use the right arrow key to navigate to the next section
 
-The slides are also hosted [here](https://mgattozzi.com/classes/run-await-with-me) online
+The slides are also hosted [here](https://mgattozzi.com/classes/run-await-with-me) online.
 All the code used in the class is available at
 [mgattozzi/async-await-class](https://github.com/mgattozzi/async-await-class)
 
