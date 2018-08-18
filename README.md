@@ -5,14 +5,10 @@ If you want to view the presentation:
 1. Clone the repo
 2. Open up the `index.html` file in a browser
 3. Use the down arrow key to navigate each section
-4. Use the right arrow key to navigate to the next section 
+4. Use the right arrow key to navigate to the next section
 
-If you want to run the examples you'll need to have `cargo` and `rustc` installed:
-
-1. It's recommended that you pin the directory to the `nightly-2018-07-14` compiler so the examples work
-2. `cargo run --bin waker`
-3. `cargo run --bin timer`
-4. `cargo run --bin tiny`
+All the code used in the class is available at
+[mgattozzi/async-await-class](https://github.com/mgattozzi/async-await-class)
 
 ## License
 

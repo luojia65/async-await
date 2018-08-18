@@ -41,6 +41,14 @@ $ rustup override set nightly
                     </code></pre>
                 </section>
                 <section>
+                    What this class is about<br><br>
+                    <ul>
+                        <li>Internals of Futures/Async/Await</li>
+                        <li>Not about Futures-rs/Tokio</li>
+                        <li>Understanding what Tokio/Futures-rs does for you</li>
+                    </ul>
+                </section>
+                <section>
                     Lots to cover!<br><br>
                     <ul>
                         <li>Async Rust history</li>
@@ -65,22 +73,22 @@ $ rustup override set nightly
                     </ul>
                 </section>
                 <section>
-                    <img src="assets/michaelno1.png"></img>
+                    <img src="assets/michaelno1.png">
                 </section>
                 <section>
-                    <img src="assets/michaelno2.png"></img>
+                    <img src="assets/michaelno2.png">
                 </section>
                 <section>
-                    <img src="assets/michaelno3.png"></img>
+                    <img src="assets/michaelno3.png">
                 </section>
                 <section>
-                    <img src="assets/michaelno4.png"></img>
+                    <img src="assets/michaelno4.png">
                 </section>
                 <section>
-                    <img src="assets/michaelno5.png"></img>
+                    <img src="assets/michaelno5.png">
                 </section>
                 <section>
-                    <img src="assets/michaelno6.png"></img>
+                    <img src="assets/michaelno6.png">
                 </section>
                 <section>
                     <section>
@@ -102,19 +110,19 @@ $ rustup override set nightly
                 <section>
                     Ask about missed references during breaks,<br>
                     and don't hate on my puns :D
-                    <img src="assets/puns.png"></img>
+                    <img src="assets/puns.png">
                 </section>
                 <section>
                     It's okay to not know things
-                    <img src="assets/motivation.png"></img>
+                    <img src="assets/motivation.png" style="width: 69%;">
                 </section>
                 <section>
                     Questions are good and encouraged!
-                    <img src="assets/encourageyou.jpg"></img>
+                    <img src="assets/encourageyou.jpg">
                 </section>
                 <section>
                     Have fun! We're learning exciting new things together!
-                    <img src="assets/learning.gif"></img>
+                    <img src="assets/learning.gif">
                 </section>
             </section>
 
@@ -122,7 +130,7 @@ $ rustup override set nightly
             <section>
                 <section>
                     <h2>The Past and Present of Futures</h2><br>
-                    <img src="assets/history.gif"></img>
+                    <img src="assets/history.gif">
                 </section>
                 <section>
                     Rust used to have lightweight userspace threads,<br>
@@ -130,10 +138,8 @@ $ rustup override set nightly
                     <!-- mention similarities to goroutines -->
                 </section>
                 <section>
-                    <section>
-                        libgreen was introduced back in 2013!
-                    </section>
-                    <img src="assets/libgreen_add.png"></img>
+                    libgreen was introduced back in 2013!<br>
+                    <img src="assets/libgreen_add.png">
                 </section>
                 <section>
                     Stack composed of runtime linked list of stacks:
@@ -143,10 +149,8 @@ $ rustup override set nightly
                     </ul>
                 </section>
                 <section>
-                    <section>
-                        libgreen was removed in 2014!
-                    </section>
-                    <img src="assets/libgreen_remove.png"></img>
+                    libgreen was removed in 2014!<br>
+                    <img src="assets/libgreen_remove.png">
                     <ul>
                         <li>No more runtime system</li>
                         <li>No more garbage collection</li>
@@ -154,7 +158,7 @@ $ rustup override set nightly
                 </section>
                 <section>
                     Is ergonomic async code possible in Rust?
-                    <img src="assets/aliens.png"></img>
+                    <img src="assets/aliens.png">
                 </section>
                 <section>
                     Spoiler Alert: Yes
@@ -165,11 +169,11 @@ $ rustup override set nightly
             <section>
                 <section>
                     <h1>Back to the Future</h1><br>
-                    <img src="assets/backtothefuture.gif"></img>
+                    <img src="assets/backtothefuture.gif">
                 </section>
                 <section>
                     So what's a Future?<br>
-                    <img src="assets/ehhhh.PNG"></img>
+                    <img src="assets/ehhhh.PNG">
                 </section>
                 <section>
                     Future = asynchronous computation<br><br>
@@ -211,18 +215,18 @@ $ rustup override set nightly
             <!-- Polling -->
             <section>
                 <section>
-                    <h2>Poll Me Maybe</h2><br>
-                    <img src="assets/ey.jpg"></img>
+                    <h2>Poll Me Maybe</h2>
+                    <img src="assets/ey.jpg" style="width: 50%;">
                 </section>
                 <section>
                     <section>
                         How Futures act if you don't poll them for values
                     </section>
-                    <img src="assets/tomorrow.jpg"></img>
+                    <img src="assets/tomorrow.jpg">
                 </section>
                 <section>
                     What is Poll?<br>
-                    <img src="assets/well.gif"></img>
+                    <img src="assets/well.gif">
                 </section>
                 <section data-transition="none">
                     Simplified signature:
@@ -260,7 +264,7 @@ trait Future {
             <section>
                 <section>
                     <h2>Concrete example time!</h2>
-                    <img src="assets/together.jpg"></img>
+                    <img src="assets/together.jpg">
                 </section>
                 <section>
                     Let's make the simplest possible future, `ready`.
@@ -357,8 +361,8 @@ impl Future for AlmostReady {
                     <ul style="font-size: 90%">
                         <li>Create a future that will resolve after 2 seconds</li>
                         <li>Don't block the event loop-- no sleeping on the main thread</li>
-                        <li>To get started, <pre><code data-noescape data-trim>
-$ git clone git@github.com:mgattozzi/async-await-class.git
+                        <li>To get started: <pre><code data-noescape data-trim>
+$ git clone https://github.com/mgattozzi/async-await-class.git
 $ cd async-await-class
 $ vim src/timer.rs # or another editor of your choice
 $ cargo run --bin timer # to check your solution
@@ -405,10 +409,19 @@ $ emacs src/executor.rs # or your favorite choice of editor
                     Let's a look at the implementation of the `Spawn` trait together.
                 </section>
                 <section>
-                    Now, fill out the two FIXMEs to get a working executor!
-                    The `impl Wake for Task` one is easier, so we recommend
-                    starting with that. As always, please ask lots of questions
-                    and we'll do our best to assist. :)
+                    <section>
+                      Your Task should you choose to Execute it
+                    </section>
+                    <ul>
+                      <li>Fill out the two FIXMEs to get a working executor!</li>
+                      <li><pre><code data-noescape data-trim>
+$ cargo run --bin executor # to check your solution
+                      </code></pre></li>
+                      <li>We recommend doing `impl Wake for Task` first as it is easier</li>
+                      <li>Create the actual Executor that will take things off the queue and poll them</li>
+                      <li>The Executor should run as long as it receives tasks to execute</li>
+                      <li>Ask questions if stuck! We'll be happy to help you out, however we can.</li>
+                    </ul>
                 </section>
             </section>
 
@@ -421,7 +434,7 @@ $ emacs src/executor.rs # or your favorite choice of editor
             <!-- async/await!() -->
             <section>
                 <section>
-                    async/await!()
+                  <h1>async/await!()</h1>
                 </section>
 
                 <section>
@@ -590,7 +603,7 @@ struct DoWith {
                 </section>
                 <section>
                     What does this all mean?<br>
-                    <img src="assets/itjustworks.jpg"></img>
+                    <img src="assets/itjustworks.jpg">
                 </section>
                 <section>
                     You'll have an understanding of what your code is doing under the hood
@@ -606,14 +619,14 @@ struct DoWith {
                 </section>
                 <section>
                     It's time to go<br>
-                    <img src="assets/dontwannago.gif"></img>
+                    <img src="assets/dontwannago.gif">
                 </section>
                 <section>
                     Big thanks to cramertj and aturon for helping with this class through planning, code, and more
                 </section>
                 <section>
                     Thank you all for coming!<br>
-                    <img src="assets/end.gif"></img>
+                    <img src="assets/end.gif">
                 </section>
                 <section>
                     <h1>Questions?</h1>
